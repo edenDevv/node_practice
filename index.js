@@ -13,7 +13,19 @@ app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"))
-})
+});
+
+function middle1(req, res, next) {
+    req.params.temp = 'data in the middle of.'
+    console.log("middle process");
+    next();
+}
+//app.use(middle1)
+//위와 같이 적으면 모든 곳에서 중간과정에서 저 함수를 다 거치게됨.
+app.get('/middle', middle1, (req, res) => {
+    console.log('last process >>>>', req.params.temp);
+    res.send("middle hi");
+});
 
 app.post("/login", (req, res) => {
     const { id, pw } = req.body;
