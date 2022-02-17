@@ -9,7 +9,7 @@ const User = require("./model");
 //바디가 json 형태로 받을 수 있음.
 app.use(express.json());
 //폼 데이터 받은 것을 사용 할 수 있다.
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"))
@@ -17,21 +17,29 @@ app.get('/', (req, res) => {
 
 app.post("/login", (req, res) => {
     const { id, pw } = req.body;
-    // const id = req.body.id;
-    // const pw = req.body.pw;
-    const findElement = userData.find((user) => user.id === id);
-    if (findElement !== undefined && findElement.pw === pw) {
-      // 성공
-      res.send({
-        status: "succ",
-      });
-    }
-    res.send({
-      status: "fail",
-    });
-  });
+    // mongodb find ===  배열 매소드 filter
+    // mongodb findOne === 배열 매소드 find
+    User.findOne({ id: id })
+        .then((result) => {
+            console.log(result);
+            if (result.pw === pw) {
+                res.send({
+                    status: "login success",
+                });
+            } else {
+                res.send({
+                    status: "wrong password",
+                });
+            }
+        })
+        .catch((err) => {
+            res.send({
+                status: "id doesn't exist",
+            });
+        });
+});
 
-  app.post('/register', (req, res) => {
+app.post('/register', (req, res) => {
     const { id, pw } = req.body;
 
     const newUser = new User({
@@ -42,15 +50,15 @@ app.post("/login", (req, res) => {
     newUser.save()
         .then((v) => {
             res.send({
-                status: "succ"
+                status: "register succ"
             })
         })
         .catch((e) => {
             res.send({
-                status: "fail"
+                status: "register fail"
             })
         });
-  })
+})
 
 
 
@@ -86,7 +94,7 @@ app.post("/login", (req, res) => {
 // 이 방식은 함수를 한개밖에 못 넣어서 아쉬움
 // app.get("/search2/:name", (req, res) => {
 //     const name = req.params.name
-    
+
 //     const result = movieSearch(name);
 //     res.send({
 //       result,
@@ -106,7 +114,7 @@ app.post("/login", (req, res) => {
 //   });
 
 
-app.listen(3000, ()=> {
+app.listen(3000, () => {
     console.log('3000 port server on')
 
     mongoose.connect(
@@ -114,5 +122,5 @@ app.listen(3000, ()=> {
         (err) => {
             console.log("MongoDB Connect");
         }
-      );
+    );
 })
