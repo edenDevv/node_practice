@@ -4,12 +4,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script>
+        window.onload = () => {
+            const loginForm = document.querySelector('#loginForm');
+            loginForm.onsubmit = (e) => {
+                e.preventDefault;
+            }
+        }
+    </script>
   </head>
   <body>
-    <form action="/search">
-      <input type="text" name="name" 
-/>
-      <input type="submit" value="검색" />
+    <h1>Only Form</h1>
+    <form action="/login" method="POST">
+      <input type="text" name="id" />
+      <input type="text" name="pw">
+      <input type="submit" value="로그인" />
     </form>
+    <h1>Other way</h1>
+    <form action="/login" method="POST" id="loginForm">
+        <input type="text" name="id" />
+        <input type="text" name="pw">
+        <input type="submit" value="로그인" />
+      </form>
   </body>
 </html>
