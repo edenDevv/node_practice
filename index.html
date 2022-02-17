@@ -5,12 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script>
-        window.onload = () => {
-            const loginForm = document.querySelector('#loginForm');
-            loginForm.onsubmit = (e) => {
-                e.preventDefault;
-            }
-        }
+      window.onload = () => {
+        const loginForm = document.getElementById("loginForm");
+        loginForm.onsubmit = (e) => {
+          e.preventDefault();
+          fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: e.target.id.value,
+              pw: e.target.pw.value,
+            }),
+          })
+            .then((v) => v.json())
+            .then((v) => {
+              if (v.status === "succ") {
+                alert("로그인 성공");
+              }
+            });
+        };
+      };
     </script>
   </head>
   <body>

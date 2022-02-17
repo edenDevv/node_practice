@@ -3,18 +3,13 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const data = require('./movieData');
+const mongoose = require("mongoose");
+const User = require("./model");
 
 //바디가 json 형태로 받을 수 있음.
 app.use(express.json());
 //폼 데이터 받은 것을 사용 할 수 있다.
 app.use(express.urlencoded({extended: true}))
-
-const userData = [
-    {
-        id: "elice",
-        pw: "1234",
-    },
-];
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"))
@@ -38,14 +33,23 @@ app.post("/login", (req, res) => {
 
   app.post('/register', (req, res) => {
     const { id, pw } = req.body;
-    const newData = {
-        id,
-        pw
-    }
-    userData.push(newData);
-    res.send({
-        status: "succ",
-    });
+
+    const newUser = new User({
+        id: id,
+        pw: pw
+    })
+
+    newUser.save()
+        .then((v) => {
+            res.send({
+                status: "succ"
+            })
+        })
+        .catch((e) => {
+            res.send({
+                status: "fail"
+            })
+        });
   })
 
 
@@ -104,4 +108,11 @@ app.post("/login", (req, res) => {
 
 app.listen(3000, ()=> {
     console.log('3000 port server on')
+
+    mongoose.connect(
+        "mongodb://localhost:27017/elice",
+        (err) => {
+            console.log("MongoDB Connect");
+        }
+      );
 })
